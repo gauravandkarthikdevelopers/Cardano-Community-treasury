@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     console.log('POST /api/communities - Request received')
     const body = await request.json()
     console.log('Request body:', body)
-    
+
     const {
       name,
       description,
@@ -82,7 +82,8 @@ export async function POST(request: NextRequest) {
       initialBalance,
       approvalThreshold,
       createdBy,
-      leaders
+      leaders,
+      members
     } = body
 
     if (!name || !treasuryAddress || !createdBy || approvalThreshold === undefined) {
@@ -110,7 +111,7 @@ export async function POST(request: NextRequest) {
     console.log('Getting database connection...')
     const db = getDb()
     console.log('Database connection established')
-    
+
     const communityId = uuidv4()
     const now = Date.now()
 
@@ -153,6 +154,26 @@ export async function POST(request: NextRequest) {
         `).run(uuidv4(), communityId, createdBy, now)
       }
 
+      // Add members
+      if (Array.isArray(members)) {
+        members.forEach((member: { address: string }) => {
+          // Skip if member is already a leader or creator (already added)
+          const isLeader = leaders.some((l: { address: string }) => l.address === member.address)
+          const isCreator = member.address === createdBy
+
+          if (!isLeader && !isCreator) {
+            try {
+              db.prepare(`
+                INSERT INTO community_members (id, community_id, wallet_address, joined_at)
+                VALUES (?, ?, ?, ?)
+              `).run(uuidv4(), communityId, member.address, now)
+            } catch (e) {
+              // Ignore duplicate members
+            }
+          }
+        })
+      }
+
       // Log activity
       db.prepare(`
         INSERT INTO activities (id, community_id, type, actor, timestamp)
@@ -192,15 +213,15 @@ export async function POST(request: NextRequest) {
         }))
       }
     }
-    
+
     console.log('Returning response:', responseData)
     return NextResponse.json(responseData, { status: 201 })
   } catch (error: any) {
     console.error('Error creating community:', error)
     console.error('Error stack:', error.stack)
     return NextResponse.json(
-      { 
-        error: 'Failed to create community', 
+      {
+        error: 'Failed to create community',
         message: error.message || 'Unknown error occurred',
         details: process.env.NODE_ENV === 'development' ? error.stack : undefined
       },

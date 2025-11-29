@@ -16,13 +16,21 @@ export default function CreateCommunityForm() {
     treasuryAddress: '',
     initialBalance: '',
     approvalThreshold: '2',
-    leaders: [{ address: '', name: '' }]
+    leaders: [{ address: '', name: '' }],
+    members: [{ address: '', name: '' }]
   })
 
   const addLeader = () => {
     setFormData({
       ...formData,
       leaders: [...formData.leaders, { address: '', name: '' }]
+    })
+  }
+
+  const addMember = () => {
+    setFormData({
+      ...formData,
+      members: [...formData.members, { address: '', name: '' }]
     })
   }
 
@@ -33,10 +41,23 @@ export default function CreateCommunityForm() {
     })
   }
 
+  const removeMember = (index: number) => {
+    setFormData({
+      ...formData,
+      members: formData.members.filter((_, i) => i !== index)
+    })
+  }
+
   const updateLeader = (index: number, field: 'address' | 'name', value: string) => {
     const newLeaders = [...formData.leaders]
     newLeaders[index][field] = value
     setFormData({ ...formData, leaders: newLeaders })
+  }
+
+  const updateMember = (index: number, field: 'address' | 'name', value: string) => {
+    const newMembers = [...formData.members]
+    newMembers[index][field] = value
+    setFormData({ ...formData, members: newMembers })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,7 +90,8 @@ export default function CreateCommunityForm() {
         initialBalance: parseFloat(formData.initialBalance) || 0,
         approvalThreshold: parseInt(formData.approvalThreshold),
         createdBy: address,
-        leaders: validLeaders
+        leaders: validLeaders,
+        members: formData.members.filter(m => m.address.trim() !== '')
       }
 
       console.log('Creating community with data:', requestBody)
@@ -220,6 +242,40 @@ export default function CreateCommunityForm() {
                 Remove
               </button>
             )}
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Members
+          </label>
+          <button
+            type="button"
+            onClick={addMember}
+            className="flex items-center gap-1 px-3 py-1 text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
+          >
+            <Plus className="w-4 h-4" />
+            Add Member
+          </button>
+        </div>
+        {formData.members.map((member, index) => (
+          <div key={index} className="flex gap-2 mb-2">
+            <input
+              type="text"
+              value={member.address}
+              onChange={(e) => updateMember(index, 'address', e.target.value)}
+              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent font-mono text-sm"
+              placeholder="Wallet address"
+            />
+            <button
+              type="button"
+              onClick={() => removeMember(index)}
+              className="px-3 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+            >
+              Remove
+            </button>
           </div>
         ))}
       </div>
