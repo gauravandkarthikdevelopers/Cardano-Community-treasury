@@ -17,10 +17,9 @@ interface Transaction {
 
 interface TransactionListProps {
   transactions: Transaction[]
-  treasuryAddress?: string
 }
 
-export default function TransactionList({ transactions, treasuryAddress }: TransactionListProps) {
+export default function TransactionList({ transactions }: TransactionListProps) {
   const formatShortAddress = (value?: string) => {
     if (!value) return 'Unknown'
     return `${value.slice(0, 20)}...`
@@ -57,12 +56,12 @@ export default function TransactionList({ transactions, treasuryAddress }: Trans
                   </span>
                 </p>
                 <p>
-                  <span className="font-medium">From:</span>{' '}
-                  <span className="font-mono text-xs">{formatShortAddress(treasuryAddress)}</span>
-                </p>
-                <p>
                   <span className="font-medium">To:</span>{' '}
                   <span className="font-mono text-xs">{formatShortAddress(tx.recipientAddress)}</span>
+                </p>
+                <p>
+                  <span className="font-medium">By:</span>{' '}
+                  <span className="font-mono text-xs">{formatShortAddress(tx.executedBy)}</span>
                 </p>
               </div>
             </div>

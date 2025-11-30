@@ -36,7 +36,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-            Create transparent, secure treasuries for your community. Powered by Cardano
+            Create transparent, secure treasuries for your community. Powered by Cardano + Midnight.
             No coding required. One-click DAO creation.
           </p>
           <div className="flex items-center justify-center gap-4">
@@ -83,7 +83,7 @@ export default function Home() {
                 Privacy + Transparency
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                ZK-verified proof of expenses Immutable on-chain audit trails. Best of both worlds.
+                ZK-verified proof of expenses with Midnight. Immutable on-chain audit trails. Best of both worlds.
               </p>
             </div>
 
@@ -160,7 +160,7 @@ export default function Home() {
       <footer className="container mx-auto px-4 py-8 border-t border-gray-200 dark:border-gray-700">
         <div className="text-center text-gray-600 dark:text-gray-400">
           <p>Built for the Cardano Hackathon</p>
-          <p className="text-sm mt-2">Powered by Cardano </p>
+          <p className="text-sm mt-2">Powered by Cardano + Midnight</p>
         </div>
       </footer>
     </div>

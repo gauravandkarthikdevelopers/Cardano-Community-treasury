@@ -23,17 +23,6 @@ export async function GET(request: NextRequest) {
         ORDER BY t.executed_at DESC
       `)
       .all(communityId)
-      .map((tx: any) => ({
-        id: tx.id,
-        proposalId: tx.proposal_id,
-        communityId: tx.community_id,
-        amount: tx.amount,
-        recipientAddress: tx.recipient_address,
-        executedBy: tx.executed_by,
-        executedAt: tx.executed_at,
-        txHash: tx.tx_hash,
-        proposalTitle: tx.proposal_title
-      }))
 
     return NextResponse.json({ transactions })
   } catch (error: any) {
